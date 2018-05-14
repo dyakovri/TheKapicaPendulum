@@ -18,9 +18,14 @@ namespace CLRTheKapicaPendulum {
 		MainForm(void)
 		{
 			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
+			
+			edit_m->Value = (Decimal) 7.0;
+			edit_l->Value = (Decimal) 5.0;
+			edit_n->Value = (Decimal) 50.0;
+			edit_a->Value = (Decimal) 3.0;
+		
+			edit_x_max->Value = (Decimal) 50.0;
+			edit_y_max->Value = (Decimal) 50.0;
 		}
 
 	protected:
@@ -59,16 +64,9 @@ namespace CLRTheKapicaPendulum {
 
 	private: System::Windows::Forms::Label^  label5;
 	private: System::Windows::Forms::NumericUpDown^  edit_x_max;
+	private: System::Windows::Forms::Timer^  timer;
 
-	protected:
-
-	private:
-		
-
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		System::ComponentModel::Container ^components;
+	private: System::ComponentModel::IContainer^  components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -77,6 +75,7 @@ namespace CLRTheKapicaPendulum {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
 			this->label4 = (gcnew System::Windows::Forms::Label());
@@ -95,6 +94,7 @@ namespace CLRTheKapicaPendulum {
 			this->edit_y_max = (gcnew System::Windows::Forms::NumericUpDown());
 			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->edit_x_max = (gcnew System::Windows::Forms::NumericUpDown());
+			this->timer = (gcnew System::Windows::Forms::Timer(this->components));
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->groupBox1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->edit_a))->BeginInit();
@@ -108,6 +108,7 @@ namespace CLRTheKapicaPendulum {
 			// 
 			// pictureBox1
 			// 
+			this->pictureBox1->BackColor = System::Drawing::SystemColors::Control;
 			this->pictureBox1->Location = System::Drawing::Point(214, 12);
 			this->pictureBox1->Name = L"pictureBox1";
 			this->pictureBox1->Size = System::Drawing::Size(441, 441);
@@ -295,6 +296,11 @@ namespace CLRTheKapicaPendulum {
 			this->edit_x_max->TabIndex = 8;
 			this->edit_x_max->ThousandsSeparator = true;
 			// 
+			// timer
+			// 
+			this->timer->Interval = 10;
+			this->timer->Tick += gcnew System::EventHandler(this, &MainForm::timer_Tick);
+			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -330,18 +336,48 @@ namespace CLRTheKapicaPendulum {
 		}
 #pragma endregion
 
+
+		private:
+			Pendulum *p;
+			Graph ^gr;
+
+
 		private: System::Void StartButton_Click(System::Object^  sender, System::EventArgs^  e) {
 			StartButton->Enabled = false;
 			StopButton->Enabled = true;
+
+			double m = (double)edit_m->Value;
+			double l = (double)edit_l->Value;
+			double n = (double)edit_n->Value;
+			double a = (double)edit_a->Value;
+
+			p = new Pendulum(m,n,a,l);
+
+			double x_max = (double)edit_x_max->Value;
+			double y_max = (double)edit_y_max->Value;
+
+			gr = gcnew Graph(pictureBox1);
+			gr->Setup("X", x_max, "Y", y_max);
+			gr->Clear();
+			gr->MakeGrid();
+
+			timer->Start();
 		}
 
 		private: System::Void StopButton_Click(System::Object^  sender, System::EventArgs^  e) {
 			StartButton->Enabled = true;
 			StopButton->Enabled = false;
+			this->timer->Stop();
+			gr->Clear();
 		}
 
 		private: System::Void CloseButton_Click(System::Object^  sender, System::EventArgs^  e) {
 			Close();
+		}
+
+		private: System::Void timer_Tick(System::Object^  sender, System::EventArgs^  e) {
+			p->Step();
+			gr->AddGraphDot(p->get_x(), p->get_y());
 		}
 	};
 }

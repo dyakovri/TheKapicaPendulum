@@ -1,5 +1,7 @@
 ﻿#include "RKMethod.h"
 
+#pragma once
+
 RKMethod::RKMethod(unsigned int N)
 {
     Init(N);
