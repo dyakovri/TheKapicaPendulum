@@ -3,8 +3,8 @@
 #include "Pendulum.cpp"
 
 BOOL CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
-void Start(double, double, double, double);
-void Tick();
+VOID Start(double, double, double, double);
+VOID Tick();
 
 HWND edit_m, 
 	 edit_l, 
@@ -12,7 +12,9 @@ HWND edit_m,
 	 edit_a,
 	 graphBox;
 
-HBITMAP hbitmap;
+long width, height;
+
+HINSTANCE *hInst;
 
 CHAR edit_m_text[] = { "7" },
 	 edit_l_text[] = { "5" },
@@ -25,6 +27,7 @@ bool started = false;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	hInst = &hInstance;
 	DialogBoxParam(hInstance, MAKEINTRESOURCE(IDD_FORMVIEW), 0, (DlgProc), 0);
 	return NULL; 
 }
@@ -45,15 +48,12 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		SendMessage(edit_n, WM_SETTEXT, 0, (LPARAM)edit_n_text);
 		SendMessage(edit_a, WM_SETTEXT, 0, (LPARAM)edit_a_text);
 
-		//hbitmap = ::LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP1));
-
-
 		SetFocus(edit_m);
 
 		SetTimer(hwnd, 1, 10, NULL);
 		break;
-	case WM_COMMAND:
 
+	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
 		case IDC_BSTART:
@@ -79,6 +79,9 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 		break;
 	case WM_CLOSE:
+		SelectObject(TmpDC, TmpObj);
+		DeleteDC(TmpDC);
+
 		KillTimer(hwnd, 1);
 		EndDialog(hwnd, 0);
 		break;
@@ -94,12 +97,12 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	return false;
 }
 
-void Start(double m, double l, double n, double a) {
+VOID Start(double m, double l, double n, double a) {
 	if (!started) p = new Pendulum(m, n, a, l);
 	started = true;
 }
 
-void Tick() {
+VOID Tick() {
 	if (started) p->Step();
 
 }
