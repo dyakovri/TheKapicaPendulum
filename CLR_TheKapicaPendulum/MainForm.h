@@ -20,12 +20,12 @@ namespace CLRTheKapicaPendulum {
 			InitializeComponent();
 			
 			edit_m->Value = (Decimal) 7.0;
-			edit_l->Value = (Decimal) 5.0;
+			edit_l->Value = (Decimal) 15.0;
 			edit_n->Value = (Decimal) 50.0;
 			edit_a->Value = (Decimal) 3.0;
 		
-			edit_x_max->Value = (Decimal) 50.0;
-			edit_y_max->Value = (Decimal) 50.0;
+			edit_x_max->Value = (Decimal) 20.0;
+			edit_y_max->Value = (Decimal) 20.0;
 		}
 
 	protected:
@@ -39,7 +39,7 @@ namespace CLRTheKapicaPendulum {
 				delete components;
 			}
 		}
-	private: System::Windows::Forms::PictureBox^  pictureBox1;
+
 	private: System::Windows::Forms::GroupBox^  groupBox1;
 	private: System::Windows::Forms::Label^  label4;
 	private: System::Windows::Forms::NumericUpDown^  edit_a;
@@ -65,6 +65,7 @@ namespace CLRTheKapicaPendulum {
 	private: System::Windows::Forms::Label^  label5;
 	private: System::Windows::Forms::NumericUpDown^  edit_x_max;
 	private: System::Windows::Forms::Timer^  timer;
+	private: System::Windows::Forms::DataVisualization::Charting::Chart^  chart1;
 
 	private: System::ComponentModel::IContainer^  components;
 
@@ -76,7 +77,8 @@ namespace CLRTheKapicaPendulum {
 		void InitializeComponent(void)
 		{
 			this->components = (gcnew System::ComponentModel::Container());
-			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Series^  series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
 			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->edit_a = (gcnew System::Windows::Forms::NumericUpDown());
@@ -95,7 +97,7 @@ namespace CLRTheKapicaPendulum {
 			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->edit_x_max = (gcnew System::Windows::Forms::NumericUpDown());
 			this->timer = (gcnew System::Windows::Forms::Timer(this->components));
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
+			this->chart1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
 			this->groupBox1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->edit_a))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->edit_n))->BeginInit();
@@ -104,16 +106,8 @@ namespace CLRTheKapicaPendulum {
 			this->groupBox2->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->edit_y_max))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->edit_x_max))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
 			this->SuspendLayout();
-			// 
-			// pictureBox1
-			// 
-			this->pictureBox1->BackColor = System::Drawing::SystemColors::Control;
-			this->pictureBox1->Location = System::Drawing::Point(214, 12);
-			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(441, 441);
-			this->pictureBox1->TabIndex = 0;
-			this->pictureBox1->TabStop = false;
 			// 
 			// groupBox1
 			// 
@@ -301,17 +295,34 @@ namespace CLRTheKapicaPendulum {
 			this->timer->Interval = 10;
 			this->timer->Tick += gcnew System::EventHandler(this, &MainForm::timer_Tick);
 			// 
+			// chart1
+			// 
+			chartArea1->Name = L"ChartArea1";
+			this->chart1->ChartAreas->Add(chartArea1);
+			this->chart1->Location = System::Drawing::Point(214, 12);
+			this->chart1->Name = L"chart1";
+			this->chart1->Palette = System::Windows::Forms::DataVisualization::Charting::ChartColorPalette::Bright;
+			series1->ChartArea = L"ChartArea1";
+			series1->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::FastLine;
+			series1->Name = L"Series1";
+			series1->XValueType = System::Windows::Forms::DataVisualization::Charting::ChartValueType::Double;
+			series1->YValueType = System::Windows::Forms::DataVisualization::Charting::ChartValueType::Double;
+			this->chart1->Series->Add(series1);
+			this->chart1->Size = System::Drawing::Size(442, 441);
+			this->chart1->TabIndex = 6;
+			this->chart1->Text = L"chart1";
+			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(664, 461);
+			this->Controls->Add(this->chart1);
 			this->Controls->Add(this->groupBox2);
 			this->Controls->Add(this->CloseButton);
 			this->Controls->Add(this->StopButton);
 			this->Controls->Add(this->StartButton);
 			this->Controls->Add(this->groupBox1);
-			this->Controls->Add(this->pictureBox1);
 			this->MaximizeBox = false;
 			this->MaximumSize = System::Drawing::Size(680, 500);
 			this->MinimizeBox = false;
@@ -320,7 +331,6 @@ namespace CLRTheKapicaPendulum {
 			this->Padding = System::Windows::Forms::Padding(5);
 			this->ShowIcon = false;
 			this->Text = L"Маятник Капицы";
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->groupBox1->ResumeLayout(false);
 			this->groupBox1->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->edit_a))->EndInit();
@@ -331,6 +341,7 @@ namespace CLRTheKapicaPendulum {
 			this->groupBox2->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->edit_y_max))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->edit_x_max))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->EndInit();
 			this->ResumeLayout(false);
 
 		}
@@ -339,45 +350,11 @@ namespace CLRTheKapicaPendulum {
 
 		private:
 			Pendulum *p;
-			Graph ^gr;
 
 
-		private: System::Void StartButton_Click(System::Object^  sender, System::EventArgs^  e) {
-			StartButton->Enabled = false;
-			StopButton->Enabled = true;
-
-			double m = (double)edit_m->Value;
-			double l = (double)edit_l->Value;
-			double n = (double)edit_n->Value;
-			double a = (double)edit_a->Value;
-
-			p = new Pendulum(m,n,a,l);
-
-			double x_max = (double)edit_x_max->Value;
-			double y_max = (double)edit_y_max->Value;
-
-			gr = gcnew Graph(pictureBox1);
-			gr->Setup("X", x_max, "Y", y_max);
-			gr->Clear();
-			gr->MakeGrid();
-
-			timer->Start();
-		}
-
-		private: System::Void StopButton_Click(System::Object^  sender, System::EventArgs^  e) {
-			StartButton->Enabled = true;
-			StopButton->Enabled = false;
-			this->timer->Stop();
-			gr->Clear();
-		}
-
-		private: System::Void CloseButton_Click(System::Object^  sender, System::EventArgs^  e) {
-			Close();
-		}
-
-		private: System::Void timer_Tick(System::Object^  sender, System::EventArgs^  e) {
-			p->Step();
-			gr->AddGraphDot(p->get_x(), p->get_y());
-		}
+		private: System::Void StartButton_Click(System::Object^  sender, System::EventArgs^  e);
+		private: System::Void StopButton_Click(System::Object^  sender, System::EventArgs^  e);
+		private: System::Void CloseButton_Click(System::Object^  sender, System::EventArgs^  e);
+		private: System::Void timer_Tick(System::Object^  sender, System::EventArgs^  e);
 	};
 }
